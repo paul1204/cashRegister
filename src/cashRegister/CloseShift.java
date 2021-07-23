@@ -24,7 +24,7 @@ public class CloseShift {
 		} catch (IOException e) {
 			e.printStackTrace();}
 	}
-	
+	 
 	//Gross Sales
 	public void addSales(double sales) {
 		this.sales += sales;
