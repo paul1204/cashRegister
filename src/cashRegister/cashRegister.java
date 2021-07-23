@@ -195,7 +195,7 @@ public class cashRegister {
 		});
 		btn7.setBounds(10, 11, 89, 50);
 		panel.add(btn7);
-		
+		 
 		JButton btn8 = new JButton("8");
 		
 		btn8.addActionListener(new ActionListener() {
