@@ -70,7 +70,6 @@ public class cashRegister {
 	 * Initialize the contents of the frame.
 	 */
 	
-	
 	//================Functions=============================
 	public void ItemCost(){
 		double sum = 0;
@@ -101,18 +100,14 @@ public class cashRegister {
 		//Bar Code
 		//String BarCode = String.format("Total is %.2f", total);
 		//jtxtBarCode.setText(BarCode);
-		//return 
 	}
 	
-	
-
-
-	
 	//================Functions=============================
-	public void Change(CloseShift shift) {
+	public double Change(CloseShift shift, int key) {
 		double sum = 0; 
 		double tax = 0.062;
-		double cash = Double.parseDouble(jtxtDisplay.getText());
+		double cash = 0;
+		
 		
 		
 		for(int i = 0; i < table.getRowCount(); i++) {
@@ -121,28 +116,29 @@ public class cashRegister {
 		
 		double cTax = (tax * sum);
 		double absTotal = (sum + cTax);
+		
+		if(key == 1) {
+		cash += Double.parseDouble(jtxtDisplay.getText());
 		double cChange = (absTotal - cash);
 		String change = String.format("$ %.2f", Math.abs(cChange));
 		jtxtChange.setText(change);
 		//shiftReport(shift);
+		addToReport(shift, sum, cTax);
+		return 0.00;
+		}
 		
+		addToReport(shift, sum, cTax);
+		return absTotal;
+		//shift.addCogs();
+	}
+
+	//================Functions=============================
+	private void addToReport(CloseShift shift, double sum, double cTax) {
 		shift.addSales(sum);
 		shift.addQty(table.getRowCount());
 		shift.addTax(cTax);
-		
-		//shift.addCogs();
 	}
-	
-	
 	//================Functions=============================
-	
-	private void shiftReport(CloseShift shift) {
-		
-	}
-	
-	
-	//================Functions=============================
-	
 	
 	
 	//================Functions=============================
@@ -160,6 +156,7 @@ public class cashRegister {
 		panel.setLayout(null);
 		
 		CloseShift shift = new CloseShift();
+		int total;
 		
 		//Data Structure to store sales information
 		ArrayList<Double> sales = new ArrayList<Double>();
@@ -494,16 +491,27 @@ public class cashRegister {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(comboBox.getSelectedItem().equals("Cash")) {
-					Change(shift);
+					//Change from Cash Payment
+					//Rename this Method Name as it as Misleading
+					Change(shift,1);
 				}
 				
-				
-				
+				if(comboBox.getSelectedItem().equals("Credit Card")) {
+					creditCardReader read = new creditCardReader();
+					int pin = read.acceptPin();
+					creditCardAuth auth = new creditCardAuth();
+					if((auth.auth(read.acceptCard(), pin, Change(shift,0)) == true)) {
+						jtxtChange.setText("Card Accepted!");
+					}
+					else {
+						//Still updates the Sales Report if Declined. 
+						jtxtChange.setText("Card Declined");
+					}
+				}
 				else {
 					jtxtChange.setText("");
 					jtxtDisplay.setText("");
 				}
-				
 				
 			}
 		});
