@@ -37,7 +37,11 @@ public class cashRegister {
 	private JTextField jtxtQty;
 
 	    //table is for Current Sales
-		private JTable table;
+		//made public for other objects to use
+		public JTable table;
+		
+		
+		
 		//table for sales report
 		private JTable salesTable;
 		private JList jSalesList;
@@ -156,7 +160,7 @@ public class cashRegister {
 		panel.setLayout(null);
 		
 		CloseShift shift = new CloseShift();
-		int total;
+		
 		
 		//Data Structure to store sales information
 		ArrayList<Double> sales = new ArrayList<Double>();
@@ -170,8 +174,8 @@ public class cashRegister {
 		//Taxes...
 		ArrayList<Double> taxes = new ArrayList<Double>();
 		
-		
-		
+		int sum = 0;
+		CalcTotal total = new CalcTotal(table);
 		
 		
 		JButton btn7 = new JButton("7");
@@ -185,7 +189,7 @@ public class cashRegister {
 				}
 				
 				else {
-					enterNum = jtxtDisplay.getText() + btn7.getText()  ; 
+					enterNum = jtxtDisplay.getText() + btn7.getText(); 
 					jtxtDisplay.setText(enterNum);
 				}
 			}
@@ -494,6 +498,10 @@ public class cashRegister {
 					//Change from Cash Payment
 					//Rename this Method Name as it as Misleading
 					Change(shift,1);
+					
+					//double absTotal = total.getTotal();
+					
+					//Get Sum of SubTotal and Taxes
 				}
 				
 				if(comboBox.getSelectedItem().equals("Credit Card")) {
@@ -518,6 +526,17 @@ public class cashRegister {
 		btnPay.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnPay.setBounds(26, 12, 89, 43);
 		panel_3_1_1.add(btnPay);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		JButton btnNewButton_12_1 = new JButton("Print");
 		btnNewButton_12_1.addActionListener(new ActionListener() {
@@ -627,8 +646,9 @@ public class cashRegister {
 				model.addRow(new Object[] {"Coffee" , "1" , price});
 				sales1.add(price);
 				itemCost.add(cost);
+				total.generateTotal();
 				//subTotal(price, 1);
-				ItemCost();
+				ItemCost(); 
 				
 			
 			}
