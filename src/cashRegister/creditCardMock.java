@@ -3,12 +3,12 @@ package cashRegister;
 class creditCardMock {
 
 	private int cardNum;
-	//private String fullName;
+	
 	String fullName;
 	private int pin;
 	
-	//private int month;
-	//private int yearExp;
+	private int month;
+	private int yearExp;
 	
 	//private int secCode;
 	
@@ -19,6 +19,7 @@ class creditCardMock {
 	}
 	
 	//From User
+	//Must Implement This Method on the Card Reader
 	public int getPin() {
 		return this.pin;
 	}
