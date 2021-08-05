@@ -62,13 +62,9 @@ public class CloseShift {
 				w.write(" ");
 				//write.write(cogsStr);
 				w.close();
-				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
-			
 		
 	}
 
