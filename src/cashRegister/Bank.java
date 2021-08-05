@@ -19,15 +19,15 @@ public class Bank {
 	//The bank is receiving a request with cardInformation. 
 	//Check to see if the Pin matches, then Check Balance
 	
-	public boolean bankAuth(creditCardMock card, int userKey, double price, int binary) {
+	public boolean bankAuth(creditCardMock card, int userKey, double price, int binaryKey) {
 		boolean a = false,b = false;
 		
-		if(binary != 1) {
+		if(binaryKey != 1) {
 			//Sequence 1a - Check if Pin is Valid
 			a = validatePin(card , userKey);
 		}
 		
-		if(binary != 0) {
+		if(binaryKey != 0) {
 			//Sequence 1b - Check if Zip is Valid
 			a = validateZip(card, userKey);
 		}
@@ -45,7 +45,7 @@ public class Bank {
 		}
 		return false;
 	}
-	
+	 
 	
 	private boolean validatePin(creditCardMock card, int pin) {
 		int num = card.getCardNum();
