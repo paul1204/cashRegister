@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JToggleButton;
 import javax.swing.JFormattedTextField;
@@ -19,7 +20,7 @@ public class gasPump {
 
 	private JFrame frame;
 	private JTextField totalPrice;
-	private JTextField textField_2;
+	private JTextField txtWelcomeToJava;
 	private JTextField regularPrice;
 	private JTextField midGradePrice;
 	private JTextField premiumPrice;
@@ -30,9 +31,13 @@ public class gasPump {
 	private gasPumps pump1;
 	private gasPumps pump2;
 	private gasPumps pump3;
+	DecimalFormat d = new DecimalFormat("###.##");
+	
 	
 	String space = "           ";
 	private JTextField gallons;
+	private JTextField total;
+	private JTextField gallonAmount;
 	
 	
 
@@ -81,14 +86,15 @@ public class gasPump {
 		
 		totalPrice = new JTextField();
 		totalPrice.setText(pump0.getPrice());
-		totalPrice.setBounds(203, 11, 113, 30);
+		totalPrice.setBounds(159, 58, 41, 30);
 		frame.getContentPane().add(totalPrice);
 		totalPrice.setColumns(10);
 	
-		textField_2 = new JTextField();
-		textField_2.setBounds(119, 102, 266, 159);
-		frame.getContentPane().add(textField_2);
-		textField_2.setColumns(10);
+		txtWelcomeToJava = new JTextField();
+		txtWelcomeToJava.setText("                           Live TV Is Currently Down! ");
+		txtWelcomeToJava.setBounds(119, 102, 266, 159);
+		frame.getContentPane().add(txtWelcomeToJava);
+		txtWelcomeToJava.setColumns(10);
 		
 		
 		
@@ -133,20 +139,20 @@ public class gasPump {
 		frame.getContentPane().add(creditCardInsert);
 		
 		regularPrice = new JTextField();
-		regularPrice.setBounds(34, 273, 66, 20);
+		regularPrice.setBounds(34, 273, 41, 20);
 		frame.getContentPane().add(regularPrice);
 		regularPrice.setColumns(10);
 		regularPrice.setText("           "+pump0.getRegular());
 		
 		midGradePrice = new JTextField();
 		midGradePrice.setColumns(10);
-		midGradePrice.setBounds(220, 272, 66, 20);
+		midGradePrice.setBounds(221, 272, 41, 20);
 		frame.getContentPane().add(midGradePrice);
 		midGradePrice.setText("           "+pump0.getMidGrade());
 		
 		premiumPrice = new JTextField();
 		premiumPrice.setColumns(10);
-		premiumPrice.setBounds(396, 273, 66, 20);
+		premiumPrice.setBounds(405, 273, 41, 20);
 		frame.getContentPane().add(premiumPrice);
 		premiumPrice.setText("           "+pump0.getPremium());
 		
@@ -166,8 +172,20 @@ public class gasPump {
 		gallons = new JTextField();
 		gallons.setColumns(10);
 		gallons.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		gallons.setBounds(227, 52, 74, 30);
+		gallons.setBounds(261, 60, 41, 30);
 		frame.getContentPane().add(gallons);
 		gallons.setText("           "+pump0.getGallons());
+		
+		total = new JTextField();
+		total.setText("Total");
+		total.setColumns(10);
+		total.setBounds(136, 13, 86, 40);
+		frame.getContentPane().add(total);
+		
+		gallonAmount = new JTextField();
+		gallonAmount.setText("Gallons");
+		gallonAmount.setColumns(10);
+		gallonAmount.setBounds(248, 13, 86, 40);
+		frame.getContentPane().add(gallonAmount);
 	}
 }
