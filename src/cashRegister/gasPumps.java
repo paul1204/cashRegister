@@ -1,5 +1,6 @@
 package cashRegister;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class gasPumps extends cardAuth{
@@ -15,7 +16,7 @@ public class gasPumps extends cardAuth{
 	double price87;
 	double price89;
 	double price93;
-	
+	DecimalFormat d = new DecimalFormat("###.##");
 	
 	
 	double totalGal = 0.00;
@@ -34,7 +35,7 @@ public class gasPumps extends cardAuth{
 	}
 	
 	public String getPrice() {
-		return Double.toString(this.totalPrice);
+		return String.format("%.2f", this.totalPrice);
 	}
 	
 	public String getGallons() {
@@ -81,7 +82,7 @@ public class gasPumps extends cardAuth{
 	
 	private void initializePrices() {
 		price = new ArrayList<Double>();
-		price87 = 2.99;
+		price87 = 2.999;
 		price89 = price87 + 0.25;
 		price93 = price89 + 0.50;
 //		
