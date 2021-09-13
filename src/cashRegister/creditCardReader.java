@@ -3,7 +3,6 @@ package cashRegister;
 public class creditCardReader {
 	//This Card Reader is Located within the Store
 	
-	
 	//We instantiate a Credit Card here because we will be using it on the Card Reader.
 	creditCardMock card = new creditCardMock(13141516 ,"Bugs Bunny", 7536);
 	private int samplePin = 7536;
@@ -25,5 +24,4 @@ public class creditCardReader {
 	private void initialize() {
 		//Turn on 
 	}
-	
 }
