@@ -3,7 +3,8 @@ package cashRegister;
 //import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException; 
+import java.io.IOException;
+import java.text.DecimalFormat; 
 
 public class CloseShift {
 
@@ -18,11 +19,7 @@ public class CloseShift {
 	FileWriter w; // = new FileWriter(shiftReport);
 	
 	public CloseShift() {
-		try {
-			shiftReport = new File("C:\\Users\\pauls\\eclipse-workspace\\cashRegisterTutorial\\src\\Shift_Report.txt");
-			w = new FileWriter(shiftReport);
-		} catch (IOException e) {
-			e.printStackTrace();}
+		
 	}
 	 
 	//Gross Sales
@@ -48,16 +45,27 @@ public class CloseShift {
 	
 	
 	public void close() {
+		
+		try {
+			shiftReport = new File("shiftReport.txt");
+			w = new FileWriter(shiftReport);
+		} catch (IOException e) {
+			e.printStackTrace();}
+		
 		String salesStr = Double.toString(sales);
-		String taxStr = Double.toString(tax);
+		DecimalFormat d = new DecimalFormat("###.##");
+		String taxStr = d.format(tax);
 		String qtyStr = Integer.toString(qty);
 	//	String cogsStr = Double.toString(cogs);
 		
 			try {
+				w.write("Sales ");
 				w.write(salesStr);
 				w.write(" ");
+				w.write("Tax ");
 				w.write(taxStr);
 				w.write(" ");
+				w.write("Qty ");
 				w.write(qtyStr);
 				w.write(" ");
 				//write.write(cogsStr);
