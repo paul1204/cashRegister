@@ -167,24 +167,7 @@ public class cashRegister {
 		panel.setLayout(null);
 		
 		CloseShift shift = new CloseShift();
-		
-		
-		//Data Structure to store sales information
-		ArrayList<Double> sales = new ArrayList<Double>();
-		ArrayList<Double> sales1 = new ArrayList<Double>();
-		//Cost of Item
-		ArrayList<Double> itemCost = new ArrayList<Double>();
-		
-		//To Store Quantity of Items
-		ArrayList<Double> qtyArr = new ArrayList<Double>();
-		
-		//Taxes...
-		ArrayList<Double> taxes = new ArrayList<Double>();
-		
-		int sum = 0;
 		CalcTotal tot = new CalcTotal();
-		
-		
 		Till till = new Till(100.00);
 		
 		JButton btn7 = new JButton("7");
