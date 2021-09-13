@@ -94,7 +94,7 @@ public class Bank {
 				cardBalance.put(12345, 100.00);
 				cardBalance.put(56789, 100.00);
 				cardBalance.put(101112, 1000.00);
-				cardBalance.put(13141516, 5.00);
+				cardBalance.put(13141516, 500.00);
 				
 							//Card Number -> cardPin
 				cardPin.put(12345, 7412);
