@@ -26,6 +26,5 @@ class creditCardMock {
 
 	public int getCardNum() {
 		return this.cardNum;
-	}
-	
+	}	
 }
