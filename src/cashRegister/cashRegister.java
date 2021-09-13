@@ -18,6 +18,7 @@ import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
@@ -146,6 +147,12 @@ public class cashRegister {
 	
 	
 	//================Functions=============================
+	
+	/*
+	 * Refractor this.method 
+	 *
+	 *
+	 */
 	private void initialize() {
 		frame = new JFrame();
 		//frame.setBounds(100, 100, 450, 300);
@@ -175,8 +182,10 @@ public class cashRegister {
 		ArrayList<Double> taxes = new ArrayList<Double>();
 		
 		int sum = 0;
-		CalcTotal total = new CalcTotal(table);
+		CalcTotal tot = new CalcTotal();
 		
+		
+		Till till = new Till(100.00);
 		
 		JButton btn7 = new JButton("7");
 		btn7.addActionListener(new ActionListener() {
@@ -264,7 +273,7 @@ public class cashRegister {
 				}
 				
 				else {
-					enterNum = jtxtDisplay.getText() + btn5.getText()  ; 
+					enterNum = jtxtDisplay.getText() + btn5.getText(); 
 					jtxtDisplay.setText(enterNum);
 				}
 			}
@@ -338,12 +347,10 @@ public class cashRegister {
 				if(enterNum == "") {
 					jtxtDisplay.setText(btn3.getText());
 				}
-				
 				else {
-					enterNum = jtxtDisplay.getText() + btn3.getText()  ; 
+					enterNum = jtxtDisplay.getText() + btn3.getText(); 
 					jtxtDisplay.setText(enterNum);
 				}
-				
 			}
 		});
 		btn3.setBounds(208, 133, 89, 34);
@@ -459,10 +466,14 @@ public class cashRegister {
 		lblDisplayCash.setBounds(13, 62, 158, 29);
 		panel_3_1.add(lblDisplayCash);
 		
+		
+		
 		jtxtDisplay = new JTextField();
+	//	jtxtDisplay.setText(null);
 		jtxtDisplay.setColumns(10);
 		jtxtDisplay.setBounds(204, 57, 210, 35);
 		panel_3_1.add(jtxtDisplay);
+	
 		
 		JLabel lblChange = new JLabel("Change");
 		lblChange.setFont(new Font("Tahoma", Font.BOLD, 24));
@@ -479,61 +490,78 @@ public class cashRegister {
 		lblPayMethod.setBounds(13, 11, 158, 29);
 		panel_3_1.add(lblPayMethod);
 		
-		JComboBox<?> comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"", "Cash", "Credit Card", "EBT"}));
+		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"", "Cash", "Credit Card", "EBT"}));
 		comboBox.setBounds(204, 11, 210, 35);
 		panel_3_1.add(comboBox);
 		
 		JPanel panel_3_1_1 = new JPanel();
 		panel_3_1_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel_3_1_1.setBounds(974, 11, 417, 155);
+		panel_3_1_1.setBounds(946, 11, 379, 155);
 		panel_2.add(panel_3_1_1);
 		panel_3_1_1.setLayout(null);
 		
+	//	String d = jtxtDisplay.getText();
+		
 		JButton btnPay = new JButton("Pay");
 		btnPay.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				
 				if(comboBox.getSelectedItem().equals("Cash")) {
 					//Change from Cash Payment
 					//Rename this Method Name as it as Misleading
-					Change(shift,1);
+					//Change(shift,1);
+				//	double userCash = Double.parseDouble(jtxtDisplay.getText());
+		
+					//Make a private method to get User Cash. 
+					//We are not able to use an 
+					CalcChange cashChange  = new CalcChange(tot, Double.parseDouble(jtxtDisplay.getText()));
 					
-					//double absTotal = total.getTotal();
+					double total =  cashChange.calcChange();
+					till.dispenseChange( total );
 					
-					//Get Sum of SubTotal and Taxes
+					String s = String.format(   "%.2f",  total   ) ;
+					
+					jtxtChange.setText( s );
+					
+					cashChange.report(tot);
+					
+					shift.addSales(tot.getSubTotal());
+					shift.addQty(tot.getQty());
+					shift.addTax(tot.getTax());
+					shift.addCogs(tot.getCogs());
+					
 				}
 				
 				if(comboBox.getSelectedItem().equals("Credit Card")) {
 					creditCardReader read = new creditCardReader();
 					int pin = read.acceptPin();
 					creditCardAuth auth = new creditCardAuth();
-					if((auth.auth(read.acceptCard(), pin, Change(shift,0)) == true)) {
+					if( (auth.auth(read.acceptCard(), pin, tot.getSubTotal()  ) == true) ) {
 						jtxtChange.setText("Card Accepted!");
+						
+						shift.addSales(tot.getSubTotal());
+						shift.addQty(tot.getQty());
+						shift.addTax(tot.getTax());
+						shift.addCogs(tot.getCogs());
+						
 					}
 					else {
 						//Still updates the Sales Report if Declined. 
 						jtxtChange.setText("Card Declined");
 					}
 				}
-				else {
-					jtxtChange.setText("");
-					jtxtDisplay.setText("");
+//				else {
+//					jtxtChange.setText("sdfkhadlkdjhflask");
+//					jtxtDisplay.setText("uoweirupqweiourwpqoiu");
+//				}
 				}
 				
-			}
 		});
 		btnPay.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnPay.setBounds(26, 12, 89, 43);
 		panel_3_1_1.add(btnPay);
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		
@@ -556,13 +584,13 @@ public class cashRegister {
 			}
 		});
 		btnNewButton_12_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewButton_12_1.setBounds(176, 11, 89, 43);
+		btnNewButton_12_1.setBounds(141, 12, 89, 43);
 		panel_3_1_1.add(btnNewButton_12_1);
 		
 		JButton btnNewButton_12_2 = new JButton("Reset");
 		btnNewButton_12_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				tot.resetTotal();
 				jtxtDisplay.setText(null);
 				jtxtQty.setText(null);
 				jtxtTax.setText(null);
@@ -574,10 +602,13 @@ public class cashRegister {
 				DefaultTableModel RecordTable = (DefaultTableModel) table.getModel();
 				RecordTable.setRowCount(0);
 				
+				
+				
+				
 			}
 		});
 		btnNewButton_12_2.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewButton_12_2.setBounds(318, 11, 89, 43);
+		btnNewButton_12_2.setBounds(243, 12, 75, 43);
 		panel_3_1_1.add(btnNewButton_12_2);
 		
 		JButton btnNewButton_12_3 = new JButton("Exit");
@@ -585,13 +616,13 @@ public class cashRegister {
 			public void actionPerformed(ActionEvent e) {
 				frame = new JFrame("Exit");
 				
-				if(JOptionPane.showConfirmDialog(frame, "Confirm if you want to Exit", "cashRegisterTutorial", JOptionPane.YES_NO_OPTION)== JOptionPane.YES_NO_OPTION) {
+				if(JOptionPane.showConfirmDialog(frame, "Confirm if you want to Exit", "cashRegister", JOptionPane.YES_NO_OPTION)== JOptionPane.YES_NO_OPTION) {
 					System.exit(0);
 				}
 			}
 		});
 		btnNewButton_12_3.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewButton_12_3.setBounds(346, 107, 61, 37);
+		btnNewButton_12_3.setBounds(257, 91, 61, 37);
 		panel_3_1_1.add(btnNewButton_12_3);
 		
 		JButton btnNewButton_12_5 = new JButton("Void Item");
@@ -611,7 +642,7 @@ public class cashRegister {
 			}
 		});
 		btnNewButton_12_5.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewButton_12_5.setBounds(26, 88, 89, 43);
+		btnNewButton_12_5.setBounds(26, 88, 105, 43);
 		panel_3_1_1.add(btnNewButton_12_5);
 		
 		JButton closeShift = new JButton("Close Shift");
@@ -627,7 +658,7 @@ public class cashRegister {
 			}
 		});
 		closeShift.setFont(new Font("Tahoma", Font.BOLD, 15));
-		closeShift.setBounds(176, 88, 136, 43);
+		closeShift.setBounds(142, 81, 105, 56);
 		panel_3_1_1.add(closeShift);
 		
 		JPanel panel_1_1 = new JPanel();
@@ -644,11 +675,23 @@ public class cashRegister {
 				double cost = 1.00;
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
 				model.addRow(new Object[] {"Coffee" , "1" , price});
-				sales1.add(price);
-				itemCost.add(cost);
-				total.generateTotal();
-				//subTotal(price, 1);
-				ItemCost(); 
+				
+//				sales1.add(price);
+//				itemCost.add(cost);
+				
+				
+				tot.generateTotal(price,cost, table);
+				
+				
+				
+				jtxtQty.setText(Integer.toString(tot.getQty()));
+				jtxtsub.setText(String.format("%.2f",tot.getSubTotal()));
+				jtxtTax.setText(String.format("%.2f",tot.getTax()));
+				jtxttotal.setText(String.format("%.2f",tot.getTotal()));
+				
+				//Double.toString(tot.getTax())
+				
+			//	ItemCost(); 
 				
 			
 			}
