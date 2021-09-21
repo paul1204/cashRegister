@@ -650,38 +650,27 @@ public class cashRegister {
 		frame.getContentPane().add(panel_1_1);
 		panel_1_1.setLayout(null);
 		
-		JButton jbtnScreenshot = new JButton("");
-		jbtnScreenshot.addActionListener(new ActionListener() {
+		JButton coffee = new JButton("");
+		coffee.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
 				double price = 2.59;
 				double cost = 1.00;
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
 				model.addRow(new Object[] {"Coffee" , "1" , price});
-				
-//				sales1.add(price);
-//				itemCost.add(cost);
-				
-				
+		
 				tot.generateTotal(price,cost, table);
-				
-				
 				
 				jtxtQty.setText(Integer.toString(tot.getQty()));
 				jtxtsub.setText(String.format("%.2f",tot.getSubTotal()));
 				jtxtTax.setText(String.format("%.2f",tot.getTax()));
 				jtxttotal.setText(String.format("%.2f",tot.getTotal()));
-				
-				//Double.toString(tot.getTax())
-				
-			//	ItemCost(); 
-				
-			
 			}
 		});
-		jbtnScreenshot.setIcon(new ImageIcon("C:\\Users\\pauls\\Pictures\\Screenshots\\Screenshot (2).png"));
-		jbtnScreenshot.setBounds(10, 18, 73, 54);
-		panel_1_1.add(jbtnScreenshot);
+		//C:\\Users\\pauls\\Pictures\\Screenshots\\Screenshot (2).png
+		coffee.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\cofe.jpg"));
+		coffee.setBounds(10, 18, 56, 58);
+		panel_1_1.add(coffee);
 		
 		JButton btnNewButton_11_1 = new JButton("");
 		btnNewButton_11_1.setBounds(10, 87, 73, 54);
@@ -691,9 +680,27 @@ public class cashRegister {
 		btnNewButton_11_1_1.setBounds(10, 169, 73, 54);
 		panel_1_1.add(btnNewButton_11_1_1);
 		
-		JButton btnNewButton_11_2 = new JButton("");
-		btnNewButton_11_2.setBounds(93, 18, 73, 54);
-		panel_1_1.add(btnNewButton_11_2);
+		JButton coke = new JButton("");
+		coke.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				double price = 1.99;
+				double cost = 1.00;
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.addRow(new Object[] {"Coke" , "1" , price});
+		
+				tot.generateTotal(price,cost, table);
+				
+				jtxtQty.setText(Integer.toString(tot.getQty()));
+				jtxtsub.setText(String.format("%.2f",tot.getSubTotal()));
+				jtxtTax.setText(String.format("%.2f",tot.getTax()));
+				jtxttotal.setText(String.format("%.2f",tot.getTotal()));
+				
+			}
+		});
+		coke.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\c.jpg"));
+		coke.setBounds(93, 18, 73, 54);
+		panel_1_1.add(coke);
 		
 		JButton btnNewButton_11_1_2 = new JButton("");
 		btnNewButton_11_1_2.setBounds(93, 87, 73, 54);
