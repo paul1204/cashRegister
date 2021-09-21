@@ -11,4 +11,4 @@ Displays Gallons, Price, and Total
 (Card Auth for Gas Pump Pending)
 
 
-More to come soon! :)
+Upcoming Installments: Inventory Management, and Profit and Loss Statement
