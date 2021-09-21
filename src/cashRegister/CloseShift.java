@@ -41,7 +41,12 @@ public class CloseShift {
 		this.cogs += cogs;
 	}
 	
-	
+	public void reset() {
+		this.sales = 0;
+		this.tax = 0;
+		this.qty = 0;
+		this.cogs = 0;
+	}
 	
 	
 	public void close() {
@@ -69,6 +74,7 @@ public class CloseShift {
 				w.write(qtyStr);
 				w.write(" ");
 				//write.write(cogsStr);
+				//this.reset();
 				w.close();
 			} catch (IOException e) {
 				e.printStackTrace();
