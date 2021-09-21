@@ -600,6 +600,7 @@ public class cashRegister {
 				frame = new JFrame("Exit");
 				
 				if(JOptionPane.showConfirmDialog(frame, "Confirm if you want to Exit", "cashRegister", JOptionPane.YES_NO_OPTION)== JOptionPane.YES_NO_OPTION) {
+					shift.reset();
 					System.exit(0);
 				}
 			}
@@ -668,7 +669,7 @@ public class cashRegister {
 			}
 		});
 		//C:\\Users\\pauls\\Pictures\\Screenshots\\Screenshot (2).png
-		coffee.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\cofe.jpg"));
+		coffee.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\coffee.jpg"));
 		coffee.setBounds(10, 18, 56, 58);
 		panel_1_1.add(coffee);
 		
@@ -698,7 +699,7 @@ public class cashRegister {
 				
 			}
 		});
-		coke.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\c.jpg"));
+		coke.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\coke.jpg"));
 		coke.setBounds(93, 18, 73, 54);
 		panel_1_1.add(coke);
 		
