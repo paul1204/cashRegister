@@ -669,7 +669,8 @@ public class cashRegister {
 			}
 		});
 		//C:\\Users\\pauls\\Pictures\\Screenshots\\Screenshot (2).png
-		coffee.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\coffee.jpg"));
+		//coffee.setIcon(new ImageIcon("/home/paul/git/cashRegister/Icons/coffee.jpg"));
+		coffee.setIcon(new ImageIcon("../cashRegister/Icons/coffee.jpg"));
 		coffee.setBounds(10, 18, 56, 58);
 		panel_1_1.add(coffee);
 		
@@ -699,7 +700,9 @@ public class cashRegister {
 				
 			}
 		});
-		coke.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\coke.jpg"));
+		//coke.setIcon(new ImageIcon("C:\\Users\\pauls\\eclipse-workspace\\cashRegister\\Icons\\coke.jpg"));
+		//coke.setIcon(new ImageIcon(""));
+		coke.setIcon(new ImageIcon("../cashRegister/Icons/coke.jpg"));
 		coke.setBounds(93, 18, 73, 54);
 		panel_1_1.add(coke);
 		
