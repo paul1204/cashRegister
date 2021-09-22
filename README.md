@@ -11,7 +11,7 @@ Displays Gallons, Price, and Total
 (Card Auth for Gas Pump Pending)
 
 
-Current Bug(s) Known\n
+Current Bug(s) Known: 
 Relative Path for Icons works for Ubuntu Linux, not Windows
 Need to Write Financial Documents to a Folder, not in Parent Directory
 
