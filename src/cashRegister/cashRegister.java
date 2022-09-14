@@ -15,6 +15,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+
+
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -26,9 +31,11 @@ import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
@@ -85,21 +92,26 @@ public class cashRegister {
 	 */
 	
 	private void initAws() {
+		
+	}
+	
+	private void initialize() {
+		
+		String bucket = "dailysalescollection";
 		AWSCredentials credentials = new BasicAWSCredentials(
-				  "<AWS accesskey>", 
-				  "<AWS secretkey>"
+				  "AKIAVPZ34GDEXMAVDYHJ", 
+				  "liXJ8jj7VcdjG9M0JfIGUIDA9RNZ6O6k8ZbTMARx"
+				  
 				);
 		
 		AmazonS3 s3client = AmazonS3ClientBuilder
 				  .standard()
 				  .withCredentials(new AWSStaticCredentialsProvider(credentials))
-				  .withRegion(Regions.US_EAST_2)
+				  .withRegion(Regions.US_EAST_1)
 				  .build();
 		
 		
-	}
-	
-	private void initialize() {
+		
 		frame = new JFrame();
 		//frame.setBounds(100, 100, 450, 300);
 		frame.setBounds(0, 0, 1450, 800);
@@ -544,9 +556,22 @@ public class cashRegister {
 		btnNewButton_12_3.setBounds(257, 91, 61, 37);
 		panel_3_1_1.add(btnNewButton_12_3);
 		
-		JButton btnNewButton_12_5 = new JButton("Void Item");
+		JButton btnNewButton_12_5 = new JButton("Report");
 		btnNewButton_12_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
+//				try {
+//					TimeUnit.MINUTES.sleep(3);
+//				} catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+				
+				File shiftReport = shift.close();
+				
+			
+				s3client.putObject(bucket, "Shift Report"  , shiftReport );
 				
 //				DefaultTableModel model = (DefaultTableModel) table.getModel();
 //				int RemoveItem = table.getSelectedRow();
@@ -572,7 +597,7 @@ public class cashRegister {
 				//DefaultTableModel model1 = (DefaultTableModel) salesTable.getModel();
 				//Double[] salesA = new Double[sales.size()];
 				
-				shift.close();
+				
 				
 			}
 		});

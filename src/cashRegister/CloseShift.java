@@ -49,13 +49,14 @@ public class CloseShift {
 	}
 	
 	
-	public void close() {
+	public File close() {
 		
 		try {
-			shiftReport = new File("shiftReport.txt");
+			shiftReport = new File("C:\\Users\\singhp35\\Documents\\shiftReport.txt");
 			w = new FileWriter(shiftReport);
 		} catch (IOException e) {
-			e.printStackTrace();}
+			e.printStackTrace();
+			}
 		
 		String salesStr = Double.toString(sales);
 		DecimalFormat d = new DecimalFormat("###.##");
@@ -79,7 +80,7 @@ public class CloseShift {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		
+		return shiftReport;
 	}
 
 }
