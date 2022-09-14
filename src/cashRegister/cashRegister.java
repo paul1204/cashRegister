@@ -8,6 +8,14 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -27,7 +35,7 @@ import javax.swing.JList;
 
 public class cashRegister {
 
-	private JFrame frame;
+	JFrame frame;
 	
 	private JTextField textField;
 	private JTextField jtxtTax;
@@ -68,6 +76,8 @@ public class cashRegister {
 	 * Create the application.
 	 */
 	public cashRegister() {
+		
+		initAws();
 		initialize();
 	}
 
@@ -75,84 +85,21 @@ public class cashRegister {
 	 * Initialize the contents of the frame.
 	 */
 	
-	//================Functions=============================
-	public void ItemCost(){
-		double sum = 0;
-		int qty = 0;
-		double taxRate = 0.062;
+	private void initAws() {
+		AWSCredentials credentials = new BasicAWSCredentials(
+				  "<AWS accesskey>", 
+				  "<AWS secretkey>"
+				);
 		
-		for(int i = 0; i < table.getRowCount(); i++) {
-			sum += Double.parseDouble(table.getValueAt(i, 2).toString());
-			qty += Double.parseDouble(table.getValueAt(i, 1).toString());
-		}
+		AmazonS3 s3client = AmazonS3ClientBuilder
+				  .standard()
+				  .withCredentials(new AWSStaticCredentialsProvider(credentials))
+				  .withRegion(Regions.US_EAST_2)
+				  .build();
 		
-		String StrQty = Integer.toString(qty);
-		jtxtQty.setText(StrQty);
 		
-		String strSubtotal = String.format("$ %.2f", sum);
-		jtxtsub.setText(strSubtotal);
-		
-		double csubTotal = sum;
-		
-		double cTax = csubTotal * taxRate;
-		String strTax = String.format("$ %.2f", cTax);
-		jtxtTax.setText(strTax);
-		
-		double total = csubTotal + cTax;
-		String strTotal = String.format("$ %.2f", total);
-		jtxttotal.setText(strTotal);  
-		
-		//Bar Code
-		//String BarCode = String.format("Total is %.2f", total);
-		//jtxtBarCode.setText(BarCode);
 	}
 	
-	//================Functions=============================
-	public double Change(CloseShift shift, int key) {
-		double sum = 0; 
-		double tax = 0.062;
-		double cash = 0;
-		
-		
-		
-		for(int i = 0; i < table.getRowCount(); i++) {
-			sum +=  Double.parseDouble(table.getValueAt(i, 2).toString());
-		}
-		
-		double cTax = (tax * sum);
-		double absTotal = (sum + cTax);
-		
-		if(key == 1) {
-		cash += Double.parseDouble(jtxtDisplay.getText());
-		double cChange = (absTotal - cash);
-		String change = String.format("$ %.2f", Math.abs(cChange));
-		jtxtChange.setText(change);
-		//shiftReport(shift);
-		addToReport(shift, sum, cTax);
-		return 0.00;
-		}
-		
-		addToReport(shift, sum, cTax);
-		return absTotal;
-		//shift.addCogs();
-	}
-
-	//================Functions=============================
-	private void addToReport(CloseShift shift, double sum, double cTax) {
-		shift.addSales(sum);
-		shift.addQty(table.getRowCount());
-		shift.addTax(cTax);
-	}
-	//================Functions=============================
-	
-	
-	//================Functions=============================
-	
-	/*
-	 * Refractor this.method 
-	 *
-	 *
-	 */
 	private void initialize() {
 		frame = new JFrame();
 		//frame.setBounds(100, 100, 450, 300);
@@ -492,19 +439,13 @@ public class cashRegister {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(comboBox.getSelectedItem().equals("Cash")) {
-					//Change from Cash Payment
-					//Rename this Method Name as it as Misleading
-					//Change(shift,1);
-				//	double userCash = Double.parseDouble(jtxtDisplay.getText());
-		
-					//Make a private method to get User Cash. 
-					//We are not able to use an 
+					
 					CalcChange cashChange  = new CalcChange(tot, Double.parseDouble(jtxtDisplay.getText()));
 					
-					double total =  cashChange.calcChange();
-					till.dispenseChange( total );
+					double change =  cashChange.calcChange();
+					till.dispenseChange( change );
 					
-					String s = String.format(   "%.2f",  total   ) ;
+					String s = String.format(   "%.2f",  change   ) ;
 					
 					jtxtChange.setText( s );
 					
@@ -514,7 +455,6 @@ public class cashRegister {
 					shift.addQty(tot.getQty());
 					shift.addTax(tot.getTax());
 					shift.addCogs(tot.getCogs());
-					
 				}
 				
 				if(comboBox.getSelectedItem().equals("Credit Card")) {
@@ -522,23 +462,22 @@ public class cashRegister {
 					int pin = read.acceptPin();
 					creditCardAuth auth = new creditCardAuth();
 					if( (auth.auth(read.acceptCard(), pin, tot.getSubTotal()  ) == true) ) {
+						//jtxt
+						//Change.setText("Card Accepted!");
+						
 						jtxtChange.setText("Card Accepted!");
+
 						
 						shift.addSales(tot.getSubTotal());
 						shift.addQty(tot.getQty());
 						shift.addTax(tot.getTax());
 						shift.addCogs(tot.getCogs());
-						
 					}
 					else {
 						//Still updates the Sales Report if Declined. 
 						jtxtChange.setText("Card Declined");
 					}
 				}
-//				else {
-//					jtxtChange.setText("sdfkhadlkdjhflask");
-//					jtxtDisplay.setText("uoweirupqweiourwpqoiu");
-//				}
 				}
 				
 		});
@@ -584,12 +523,9 @@ public class cashRegister {
 				
 				DefaultTableModel RecordTable = (DefaultTableModel) table.getModel();
 				RecordTable.setRowCount(0);
-				
-				
-				
-				
 			}
 		});
+		
 		btnNewButton_12_2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnNewButton_12_2.setBounds(243, 12, 75, 43);
 		panel_3_1_1.add(btnNewButton_12_2);
@@ -613,16 +549,16 @@ public class cashRegister {
 		btnNewButton_12_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				DefaultTableModel model = (DefaultTableModel) table.getModel();
-				int RemoveItem = table.getSelectedRow();
-				
-				if(RemoveItem >= 0) {
-					model.removeRow(RemoveItem);
-				
-				}
+//				DefaultTableModel model = (DefaultTableModel) table.getModel();
+//				int RemoveItem = table.getSelectedRow();
+//				
+//				if(RemoveItem >= 0) {
+//					model.removeRow(RemoveItem);
+//				
+//				}
 				
 				//Re Calculates 
-				ItemCost();
+				//ItemCost();
 			}
 		});
 		btnNewButton_12_5.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -668,8 +604,7 @@ public class cashRegister {
 				jtxttotal.setText(String.format("%.2f",tot.getTotal()));
 			}
 		});
-		//C:\\Users\\pauls\\Pictures\\Screenshots\\Screenshot (2).png
-		//coffee.setIcon(new ImageIcon("/home/paul/git/cashRegister/Icons/coffee.jpg"));
+
 		coffee.setIcon(new ImageIcon("../cashRegister/Icons/coffee.jpg"));
 		coffee.setBounds(10, 18, 56, 58);
 		panel_1_1.add(coffee);
@@ -773,3 +708,87 @@ public class cashRegister {
 		textField.setColumns(10);
 	}
 }
+
+
+
+/*
+//================Functions=============================
+public void ItemCost(){
+	double sum = 0;
+	int qty = 0;
+	double taxRate = 0.062;
+	
+	for(int i = 0; i < table.getRowCount(); i++) {
+		sum += Double.parseDouble(table.getValueAt(i, 2).toString());
+		qty += Double.parseDouble(table.getValueAt(i, 1).toString());
+	}
+	
+	String StrQty = Integer.toString(qty);
+	jtxtQty.setText(StrQty);
+	
+	String strSubtotal = String.format("$ %.2f", sum);
+	jtxtsub.setText(strSubtotal);
+	
+	double csubTotal = sum;
+	
+	double cTax = csubTotal * taxRate;
+	String strTax = String.format("$ %.2f", cTax);
+	jtxtTax.setText(strTax);
+	
+	double total = csubTotal + cTax;
+	String strTotal = String.format("$ %.2f", total);
+	jtxttotal.setText(strTotal);  
+	
+	//Bar Code
+	//String BarCode = String.format("Total is %.2f", total);
+	//jtxtBarCode.setText(BarCode);
+}
+
+//================Functions=============================
+public double Change(CloseShift shift, int key) {
+	double sum = 0; 
+	double tax = 0.062;
+	double cash = 0;
+	
+	
+	
+	for(int i = 0; i < table.getRowCount(); i++) {
+		sum +=  Double.parseDouble(table.getValueAt(i, 2).toString());
+	}
+	
+	double cTax = (tax * sum);
+	double absTotal = (sum + cTax);
+	
+	if(key == 1) {
+	cash += Double.parseDouble(jtxtDisplay.getText());
+	double cChange = (absTotal - cash);
+	String change = String.format("$ %.2f", Math.abs(cChange));
+	jtxtChange.setText(change);
+	//shiftReport(shift);
+	addToReport(shift, sum, cTax);
+	return 0.00;
+	}
+	
+	addToReport(shift, sum, cTax);
+	return absTotal;
+	//shift.addCogs();
+}
+
+//================Functions=============================
+private void addToReport(CloseShift shift, double sum, double cTax) {
+	shift.addSales(sum);
+	shift.addQty(table.getRowCount());
+	shift.addTax(cTax);
+}
+//================Functions=============================
+
+
+//================Functions=============================
+*/
+
+/*
+ * Refractor this.method 
+ *
+ *
+ */
+
