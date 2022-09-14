@@ -10,10 +10,4 @@ Can select different Octane
 Displays Gallons, Price, and Total
 (Card Auth for Gas Pump Pending)
 
-
-Current Bug(s) Known: 
-Relative Path for Icons works for Ubuntu Linux, not Windows
-Need to Write Financial Documents to a Folder, not in Parent Directory
-
-
-Upcoming Installments: Inventory Management, and Profit and Loss Statement
+Able to connect to AWS to push Sales reports for the Financial Service
