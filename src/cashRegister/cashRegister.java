@@ -75,8 +75,7 @@ public class cashRegister {
 	/**
 	 * Create the application.
 	 */
-	public cashRegister() {
-		
+	public cashRegister() {		
 		initAws();
 		initialize();
 	}
