@@ -4,7 +4,10 @@ package cashRegister;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat; 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import com.opencsv.CSVWriter; 
 
 public class CloseShift {
 
@@ -51,36 +54,40 @@ public class CloseShift {
 	
 	public File close() {
 		
+
 		try {
-			shiftReport = new File("C:\\Users\\singhp35\\Documents\\shiftReport.txt");
+			shiftReport = new File("/home/paul/Desktop/csvFile/shiftReport.csv");
 			w = new FileWriter(shiftReport);
-		} catch (IOException e) {
-			e.printStackTrace();
-			}
-		
+			  
+		   // create CSVWriter object filewriter object as parameter
+		   CSVWriter writer = new CSVWriter(w);
+			
 		String salesStr = Double.toString(sales);
 		DecimalFormat d = new DecimalFormat("###.##");
 		String taxStr = d.format(tax);
 		String qtyStr = Integer.toString(qty);
-	//	String cogsStr = Double.toString(cogs);
+		String cogsStr = Double.toString(cogs);
 		
-			try {
-				w.write("Sales ");
+			
+			//ArrayList<String[]> data = new ArrayList<String[]>();
+		   // data.add(new String[] { salesStr, taxStr, qtyStr });
+		//	writer.writeAll(data);
+		//Don't delete these yet		
+//				w.write("Sales ");
 				w.write(salesStr);
-				w.write(" ");
-				w.write("Tax ");
+				w.write(",");
+//				w.write("Tax ");
 				w.write(taxStr);
-				w.write(" ");
-				w.write("Qty ");
+				w.write(",");
+//				w.write("Qty ");
 				w.write(qtyStr);
-				w.write(" ");
-				//write.write(cogsStr);
+				w.write(",");
+				w.write(cogsStr);
 				//this.reset();
-				w.close();
+				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		return shiftReport;
-	}
-
+				e.printStackTrace();	
+}
+		return shiftReport;	
+	}	
 }

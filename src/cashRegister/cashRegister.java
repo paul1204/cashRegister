@@ -99,8 +99,8 @@ public class cashRegister {
 		
 		String bucket = "dailysalescollection";
 		AWSCredentials credentials = new BasicAWSCredentials(
-				  "Update Key", 
-				  "Update Key"
+				  "AKIAVPZ34GDEVVMAH3F4", 
+				  "VMsxeOwf+TBRWI/2rSNNVEK3hmk9GBy9Gbi9UY+X"
 				  
 				);
 		
@@ -560,50 +560,41 @@ public class cashRegister {
 		btnNewButton_12_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
-//				try {
-//					TimeUnit.MINUTES.sleep(3);
-//				} catch (InterruptedException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-				
 				File shiftReport = shift.close();
 				
+				String folder = "Sales/";
+				//String baseName = "_";
+				//MM/DD/YY for date
+				String date = "010722";
+				String ext = ".csv";
+				
+				
+				String fileName = folder + date + ext;
+				
 			
-				s3client.putObject(bucket, "Shift Report"  , shiftReport );
+				s3client.putObject(bucket, fileName  , shiftReport );
 				
-//				DefaultTableModel model = (DefaultTableModel) table.getModel();
-//				int RemoveItem = table.getSelectedRow();
-//				
-//				if(RemoveItem >= 0) {
-//					model.removeRow(RemoveItem);
-//				
-//				}
-				
-				//Re Calculates 
-				//ItemCost();
 			}
 		});
 		btnNewButton_12_5.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnNewButton_12_5.setBounds(26, 88, 105, 43);
 		panel_3_1_1.add(btnNewButton_12_5);
 		
-		JButton closeShift = new JButton("Close Shift");
-		closeShift.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//MessageFormat header = new MessageFormat("Sales Report");
-				//MessageFormat footer = new MessageFormat("Page {0, number, integer}");
-				//DefaultTableModel model1 = (DefaultTableModel) salesTable.getModel();
-				//Double[] salesA = new Double[sales.size()];
-				
-				
-				
-			}
-		});
-		closeShift.setFont(new Font("Tahoma", Font.BOLD, 15));
-		closeShift.setBounds(142, 81, 105, 56);
-		panel_3_1_1.add(closeShift);
+//		JButton closeShift = new JButton("");
+//		closeShift.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				//MessageFormat header = new MessageFormat("Sales Report");
+//				//MessageFormat footer = new MessageFormat("Page {0, number, integer}");
+//				//DefaultTableModel model1 = (DefaultTableModel) salesTable.getModel();
+//				//Double[] salesA = new Double[sales.size()];
+//				
+//				
+//				
+//			}
+//		});
+//		closeShift.setFont(new Font("Tahoma", Font.BOLD, 15));
+//		closeShift.setBounds(142, 81, 105, 56);
+//		panel_3_1_1.add(closeShift);
 		
 		JPanel panel_1_1 = new JPanel();
 		panel_1_1.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -732,87 +723,3 @@ public class cashRegister {
 		textField.setColumns(10);
 	}
 }
-
-
-
-/*
-//================Functions=============================
-public void ItemCost(){
-	double sum = 0;
-	int qty = 0;
-	double taxRate = 0.062;
-	
-	for(int i = 0; i < table.getRowCount(); i++) {
-		sum += Double.parseDouble(table.getValueAt(i, 2).toString());
-		qty += Double.parseDouble(table.getValueAt(i, 1).toString());
-	}
-	
-	String StrQty = Integer.toString(qty);
-	jtxtQty.setText(StrQty);
-	
-	String strSubtotal = String.format("$ %.2f", sum);
-	jtxtsub.setText(strSubtotal);
-	
-	double csubTotal = sum;
-	
-	double cTax = csubTotal * taxRate;
-	String strTax = String.format("$ %.2f", cTax);
-	jtxtTax.setText(strTax);
-	
-	double total = csubTotal + cTax;
-	String strTotal = String.format("$ %.2f", total);
-	jtxttotal.setText(strTotal);  
-	
-	//Bar Code
-	//String BarCode = String.format("Total is %.2f", total);
-	//jtxtBarCode.setText(BarCode);
-}
-
-//================Functions=============================
-public double Change(CloseShift shift, int key) {
-	double sum = 0; 
-	double tax = 0.062;
-	double cash = 0;
-	
-	
-	
-	for(int i = 0; i < table.getRowCount(); i++) {
-		sum +=  Double.parseDouble(table.getValueAt(i, 2).toString());
-	}
-	
-	double cTax = (tax * sum);
-	double absTotal = (sum + cTax);
-	
-	if(key == 1) {
-	cash += Double.parseDouble(jtxtDisplay.getText());
-	double cChange = (absTotal - cash);
-	String change = String.format("$ %.2f", Math.abs(cChange));
-	jtxtChange.setText(change);
-	//shiftReport(shift);
-	addToReport(shift, sum, cTax);
-	return 0.00;
-	}
-	
-	addToReport(shift, sum, cTax);
-	return absTotal;
-	//shift.addCogs();
-}
-
-//================Functions=============================
-private void addToReport(CloseShift shift, double sum, double cTax) {
-	shift.addSales(sum);
-	shift.addQty(table.getRowCount());
-	shift.addTax(cTax);
-}
-//================Functions=============================
-
-
-//================Functions=============================
-*/
-
-/*
- * Refractor this.method 
- *
- *
- */
-
