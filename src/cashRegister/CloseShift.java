@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import com.opencsv.CSVWriter; 
@@ -68,12 +70,22 @@ public class CloseShift {
 		String qtyStr = Integer.toString(qty);
 		String cogsStr = Double.toString(cogs);
 		
+		
+		LocalDateTime myDateObj = LocalDateTime.now();
+	   // System.out.println("Before formatting: " + myDateObj);
+	    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+	    String formattedDate = myDateObj.format(myFormatObj);
+	    System.out.println("After formatting?: " + formattedDate);
+		
 			
 			//ArrayList<String[]> data = new ArrayList<String[]>();
 		   // data.add(new String[] { salesStr, taxStr, qtyStr });
 		//	writer.writeAll(data);
 		//Don't delete these yet		
 //				w.write("Sales ");
+	    		w.write(formattedDate);
+	    		w.write(",");
 				w.write(salesStr);
 				w.write(",");
 //				w.write("Tax ");

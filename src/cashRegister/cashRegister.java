@@ -34,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
@@ -99,8 +101,8 @@ public class cashRegister {
 		
 		String bucket = "dailysalescollection";
 		AWSCredentials credentials = new BasicAWSCredentials(
-				  "UPDATE ME", 
-				  "UPDATE ME"
+				  "", 
+				  ""
 				  
 				);
 		
@@ -538,7 +540,7 @@ public class cashRegister {
 		});
 		
 		btnNewButton_12_2.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewButton_12_2.setBounds(243, 12, 75, 43);
+		btnNewButton_12_2.setBounds(243, 12, 105, 51);
 		panel_3_1_1.add(btnNewButton_12_2);
 		
 		JButton btnNewButton_12_3 = new JButton("Exit");
@@ -553,7 +555,7 @@ public class cashRegister {
 			}
 		});
 		btnNewButton_12_3.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnNewButton_12_3.setBounds(257, 91, 61, 37);
+		btnNewButton_12_3.setBounds(141, 91, 148, 37);
 		panel_3_1_1.add(btnNewButton_12_3);
 		
 		JButton btnNewButton_12_5 = new JButton("Report");
@@ -562,15 +564,16 @@ public class cashRegister {
 				
 				File shiftReport = shift.close();
 				
+				LocalDateTime myDateObj = LocalDateTime.now();
+			    DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+				String formattedDate = myDateObj.format(myFormatObj);
 				String folder = "Sales/";
-				//String baseName = "_";
 				//MM/DD/YY for date
-				String date = "010722";
+				//String date = "010722";
 				String ext = ".csv";
-				
-				
-				String fileName = folder + date + ext;
-				
+				String fileName = folder + formattedDate + ext;
+				System.out.println(fileName + " this is going to the S3");
 			
 				s3client.putObject(bucket, fileName  , shiftReport );
 				
@@ -625,12 +628,10 @@ public class cashRegister {
 		panel_1_1.add(coffee);
 		
 		JButton btnNewButton_11_1 = new JButton("");
-		btnNewButton_11_1.setBounds(10, 87, 73, 54);
+		btnNewButton_11_1.setBounds(10, 169, 73, 54);
 		panel_1_1.add(btnNewButton_11_1);
 		
-		JButton btnNewButton_11_1_1 = new JButton("");
-		btnNewButton_11_1_1.setBounds(10, 169, 73, 54);
-		panel_1_1.add(btnNewButton_11_1_1);
+
 		
 		JButton coke = new JButton("");
 		coke.addActionListener(new ActionListener() {
@@ -699,6 +700,10 @@ public class cashRegister {
 		JButton btnNewButton_11_1_1_1_1_1 = new JButton("");
 		btnNewButton_11_1_1_1_1_1.setBounds(342, 169, 73, 54);
 		panel_1_1.add(btnNewButton_11_1_1_1_1_1);
+		
+		JButton btnNewButton_11_1_1 = new JButton("");
+		btnNewButton_11_1_1.setBounds(10, 88, 73, 54);
+		panel_1_1.add(btnNewButton_11_1_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(773, 15, 187, 241);
