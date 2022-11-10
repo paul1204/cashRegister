@@ -51,9 +51,13 @@ public class MasterReceipt {
 	}
 	
 	public CustomerReceipt generateChildReceipt(CustomerReceipt receipt) {
+			receipt.storeName = this.storeName;
+			receipt.phone = this.phone;
+			receipt.absTotal = this.absTotal;
+			receipt.transactionNum = this.transactionNum;
+			receipt.receiptItems = this.receiptItems;
 			
-		
-		return null;
+			return receipt;
 	}
 	
 	

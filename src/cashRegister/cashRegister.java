@@ -20,6 +20,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 
 import items.Item;
+import printer.Printer;
 import receipt.CustomerReceipt;
 import receipt.MasterReceipt;
 
@@ -109,7 +110,7 @@ public class cashRegister {
 	}
 	
 	private void pushReceiptTOAWS(AmazonS3 s3, String bucket , String json, int transactionId ) throws IOException {	
-		File parentReceipt = new File("/home/paul/Desktop/receipts/");
+		File parentReceipt = new File("/home/paul/Desktop/store/receipts/");
 		FileWriter w = new FileWriter(parentReceipt);
 		parentReceipt.createNewFile();
 		
@@ -162,6 +163,7 @@ public class cashRegister {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 		CustomerReceipt customerReceipt = new CustomerReceipt();
+		Printer print = new Printer();
 		
 		JButton btn7 = new JButton("7");
 		btn7.addActionListener(new ActionListener() {
@@ -483,7 +485,8 @@ public class cashRegister {
 		btnPay.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				String jsonString = "";
+				String jsonParent = "";
+				String jsonChild = "";
 
 				
 				if(comboBox.getSelectedItem().equals("Cash")) {
@@ -495,9 +498,12 @@ public class cashRegister {
 				    int transactionID = (int)Math.floor(Math.random()*(9999-0+1)+0);
 
 				    receipt.pushTotalToReceipt(tot, transactionID);
+				    receipt.generateChildReceipt(customerReceipt);
 				    
 				    try {
-						jsonString = mapper.writeValueAsString(receipt);
+						jsonParent = mapper.writeValueAsString(receipt);
+						jsonChild = mapper.writeValueAsString(customerReceipt); 
+						
 					} catch (JsonProcessingException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -522,11 +528,14 @@ public class cashRegister {
 					shift.addTax(tot.getTax());
 					shift.addCogs(tot.getCogs());
 					
-					receipt.generateChildReceipt(customerReceipt);
+					
+					
+					
+					
 					
 					//Lets put this on another thread to execute
 					try {
-						pushReceiptTOAWS(s3client, bucket, jsonString, transactionID);
+						pushReceiptTOAWS(s3client, bucket, jsonParent, transactionID);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
