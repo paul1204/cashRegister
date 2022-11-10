@@ -129,8 +129,8 @@ public class cashRegister {
 		
 		String bucket = "dailysalescollection";
 		AWSCredentials credentials = new BasicAWSCredentials(
-				  "AKIAVPZ34GDESFXLIJP5", 
-				  "EfG4j1KTzVoAJE+lYRGoly7Z+R6jesUexlN44uKR"
+				  "", 
+				  ""
 				  
 				);
 		
