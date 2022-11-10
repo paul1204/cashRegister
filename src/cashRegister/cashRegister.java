@@ -19,7 +19,9 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 
-
+import items.Item;
+import receipt.CustomerReceipt;
+import receipt.MasterReceipt;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -32,6 +34,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -41,6 +45,13 @@ import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper; 
+import com.fasterxml.jackson.databind.ObjectWriter; 
+
 
 public class cashRegister {
 
@@ -97,12 +108,28 @@ public class cashRegister {
 		
 	}
 	
+	private void pushReceiptTOAWS(AmazonS3 s3, String bucket , String json, int transactionId ) throws IOException {	
+		File parentReceipt = new File("/home/paul/Desktop/receipts/");
+		FileWriter w = new FileWriter(parentReceipt);
+		parentReceipt.createNewFile();
+		
+		String baseFile = "Receipt/";
+		String storeNumber = "102/";
+		String file = baseFile + storeNumber + Integer.toString(transactionId)+".json";
+		
+		
+		w.write(json);
+		w.close();
+		s3.putObject(bucket, file  , parentReceipt );
+
+	}
+	
 	private void initialize() {
 		
 		String bucket = "dailysalescollection";
 		AWSCredentials credentials = new BasicAWSCredentials(
-				  "", 
-				  ""
+				  "AKIAVPZ34GDESFXLIJP5", 
+				  "EfG4j1KTzVoAJE+lYRGoly7Z+R6jesUexlN44uKR"
 				  
 				);
 		
@@ -129,6 +156,12 @@ public class cashRegister {
 		CloseShift shift = new CloseShift();
 		CalcTotal tot = new CalcTotal();
 		Till till = new Till(100.00);
+		
+		ArrayList<Item> toReceipt = new ArrayList<>();
+		MasterReceipt receipt = new MasterReceipt();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+		CustomerReceipt customerReceipt = new CustomerReceipt();
 		
 		JButton btn7 = new JButton("7");
 		btn7.addActionListener(new ActionListener() {
@@ -448,26 +481,57 @@ public class cashRegister {
 		
 		JButton btnPay = new JButton("Pay");
 		btnPay.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent e) {
+				String jsonString = "";
+
 				
 				if(comboBox.getSelectedItem().equals("Cash")) {
 					
 					CalcChange cashChange  = new CalcChange(tot, Double.parseDouble(jtxtDisplay.getText()));
 					
-					double change =  cashChange.calcChange();
-					till.dispenseChange( change );
+					double change = cashChange.calcChange();
 					
-					String s = String.format(   "%.2f",  change   ) ;
+				    int transactionID = (int)Math.floor(Math.random()*(9999-0+1)+0);
+
+				    receipt.pushTotalToReceipt(tot, transactionID);
+				    
+				    try {
+						jsonString = mapper.writeValueAsString(receipt);
+					} catch (JsonProcessingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
-					jtxtChange.setText( s );
+				    
+				    
+					till.dispenseChange(change);					
 					
-					cashChange.report(tot);
+					String s = String.format("%.2f", change) ;
 					
+					
+					
+					
+					jtxtChange.setText(s);
+					
+					//cashChange.report(tot); ??
+					
+										
 					shift.addSales(tot.getSubTotal());
 					shift.addQty(tot.getQty());
 					shift.addTax(tot.getTax());
 					shift.addCogs(tot.getCogs());
+					
+					receipt.generateChildReceipt(customerReceipt);
+					
+					//Lets put this on another thread to execute
+					try {
+						pushReceiptTOAWS(s3client, bucket, jsonString, transactionID);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					//Lets put this on another thread to execute
 				}
 				
 				if(comboBox.getSelectedItem().equals("Credit Card")) {
@@ -475,8 +539,10 @@ public class cashRegister {
 					int pin = read.acceptPin();
 					creditCardAuth auth = new creditCardAuth();
 					if( (auth.auth(read.acceptCard(), pin, tot.getSubTotal()  ) == true) ) {
-						//jtxt
-						//Change.setText("Card Accepted!");
+						
+					     int transactionID = (int)Math.floor(Math.random()*(9999-0+1)+0);
+
+						receipt.pushTotalToReceipt(tot, transactionID);
 						
 						jtxtChange.setText("Card Accepted!");
 
@@ -487,16 +553,20 @@ public class cashRegister {
 						shift.addCogs(tot.getCogs());
 					}
 					else {
-						//Still updates the Sales Report if Declined. 
 						jtxtChange.setText("Card Declined");
 					}
 				}
 				}
 				
 		});
+		
 		btnPay.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnPay.setBounds(26, 12, 89, 43);
 		panel_3_1_1.add(btnPay);
+		
+		
+		
+		
 		
 		
 		
@@ -515,6 +585,10 @@ public class cashRegister {
 				catch(java.awt.print.PrinterException ex) {
 					System.err.format("No Printer Found", ex.getMessage());
 				}
+			
+				
+				
+				
 				
 			}
 		});
@@ -609,10 +683,23 @@ public class cashRegister {
 		coffee.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
+				
+				String name = "Coffee";
 				double price = 2.59;
+				String upcNumber = "1234";
+				String size = "12oz";
+				
 				double cost = 1.00;
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
-				model.addRow(new Object[] {"Coffee" , "1" , price});
+				
+				Item coffee = new Item(name, price, upcNumber, size);
+				
+				//toReceipt.add(coffee);
+				
+				receipt.addItem(coffee);
+				
+				
+				model.addRow(new Object[] {coffee.getName() , "1" , coffee.getPrice()});
 		
 				tot.generateTotal(price,cost, table);
 				
@@ -637,10 +724,17 @@ public class cashRegister {
 		coke.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				double price = 1.99;
+				String name = "Coke";
+				double price = 2.59;
+				String upcNumber = "2341";
+				String size = "12oz";
 				double cost = 1.00;
+				Item coke = new Item(name, price, upcNumber, size);
+				receipt.addItem(coke);
+				
+				
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
-				model.addRow(new Object[] {"Coke" , "1" , price});
+				model.addRow(new Object[] {coke.getName() , "1" , coke.getPrice()});
 		
 				tot.generateTotal(price,cost, table);
 				

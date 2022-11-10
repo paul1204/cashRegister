@@ -25,9 +25,7 @@ public class CalcTotal {
 		//this.table = t;
 	}
 	
-	public double getSubTotal() {
-		return this.subTotal;
-	}
+	
 	
 	public double generateTotal(double price,double cos, JTable t) {
 		this.table = t;
@@ -95,6 +93,10 @@ public class CalcTotal {
 	
 	public int getQty() {
 		return (qty);
+	}
+	
+	public double getSubTotal() {
+		return this.subTotal;
 	}
 	
 	public void resetTotal() {
